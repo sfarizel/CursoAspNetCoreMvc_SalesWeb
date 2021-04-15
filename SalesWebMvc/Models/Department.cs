@@ -14,11 +14,16 @@ namespace SalesWebMvc.Models
         {
 
         }
-        public Department(int id, string name)
+        //public Department(int id, string name)
+        //{
+        //    Id = id;
+        //    Name = name;
+        //}
+        public Department( string name)
         {
-            Id = id;
             Name = name;
         }
+
         public void AddSeller(Seller seller)
         {
             Sellers.Add(seller);
