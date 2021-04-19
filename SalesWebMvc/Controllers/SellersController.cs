@@ -109,7 +109,7 @@ namespace SalesWebMvc.Controllers
                 _sellerService.Update(seller);
                 return RedirectToAction(nameof(Index));
             }
-            catch (ApplicationException  e) //Supetipo de erro 
+            catch (ApplicationException  e) //Super tipo de erro 
             {
                 return RedirectToAction(nameof(Error), new { message = e.Message });
             }
