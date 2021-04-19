@@ -16,7 +16,7 @@ namespace SalesWebMvc.Controllers
         private readonly SellerService _sellerService;
         private readonly DepartmentService _departmentService;
 
-    public SellersController (SellerService sellerService, DepartmentService departmentService )
+        public SellersController(SellerService sellerService, DepartmentService departmentService)
         {
             _sellerService = sellerService;
             _departmentService = departmentService;
@@ -32,15 +32,24 @@ namespace SalesWebMvc.Controllers
         public IActionResult Create()
         {
             var departments = _departmentService.FindAll();
-            var viewModel = new SellerFormViewModel { Departments = departments }; 
+            var viewModel = new SellerFormViewModel { Departments = departments };
             return View(viewModel);
         }
 
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Seller seller)
         {
+
+            /*Criticar campos validos na view*/
+            if (!ModelState.IsValid)
+                {
+                var departments = _departmentService.FindAll();
+                var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
+                return View(viewModel);
+            }
+
             _sellerService.Inser(seller);
             return RedirectToAction(nameof(Index));
 
@@ -55,7 +64,7 @@ namespace SalesWebMvc.Controllers
             var obj = _sellerService.FindById(id.Value);
             if (obj == null)
             {
-                return RedirectToAction(nameof(Error), new { message = "Id not found" }); 
+                return RedirectToAction(nameof(Error), new { message = "Id not found" });
             }
             return View(obj);
         }
@@ -72,7 +81,7 @@ namespace SalesWebMvc.Controllers
         {
             if (id == null)
             {
-                return RedirectToAction(nameof(Error), new { message = "Id not provided" }); 
+                return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
             var obj = _sellerService.FindById(id.Value);
             if (obj == null)
@@ -100,6 +109,14 @@ namespace SalesWebMvc.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Seller seller)
         {
+            /*Criticar campos validos na view*/
+            if (!ModelState.IsValid)
+            {
+                var departments = _departmentService.FindAll();
+                var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
+                return View(viewModel);
+            }
+
             if (id != seller.Id)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id mismatch" });
@@ -109,7 +126,7 @@ namespace SalesWebMvc.Controllers
                 _sellerService.Update(seller);
                 return RedirectToAction(nameof(Index));
             }
-            catch (ApplicationException  e) //Super tipo de erro 
+            catch (ApplicationException e) //Super tipo de erro 
             {
                 return RedirectToAction(nameof(Error), new { message = e.Message });
             }
